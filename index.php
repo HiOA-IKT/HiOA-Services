@@ -5,7 +5,6 @@
 		<script src="jquery.min.js"></script>
 		<script src="services.js"></script>
 		<link rel="stylesheet" type="text/css" href="services.css">
-		<meta http-equiv="refresh" content="20" >
 	</head>
 	<body>
 		<?php
