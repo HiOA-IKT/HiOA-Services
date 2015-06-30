@@ -3,7 +3,6 @@ $(document).ready(function(){
 	$(".title").click(function(){
 		$(this).siblings(".dropdown").slideToggle("fast");
 	});
-	
 	// Service errors, dropping down urls
 	$(".error").click(function(){
 		$(this).siblings(".urls").slideToggle("fast");
