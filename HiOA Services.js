@@ -20,6 +20,7 @@ watcher.on('add',function(path){
 		var file = path_ar.pop();
 		var cat = path_ar.pop();
 		extract_and_emit("err-add", cat, file, data);
+		console.log("Error \""+file+"\"");
 	});
 })
 .on('change', function(path){
@@ -30,22 +31,19 @@ watcher.on('add',function(path){
 		var cat = path_ar.pop();
 		extract_and_emit("err-update", cat, file, data);
 	});
-	console.log("change " +  path);
 })
 .on('unlink', function(path){
 	var path_ar = path.split("/");
 	var file = path_ar.pop();
 	var cat = path_ar.pop();
 	io.emit('err-rm', cat, file);
-	console.log("delete " +  path);
+	console.log("Error \""+file+"\" fixed! :D");
 })
 function extract_and_emit(ev, cat, file, data){
 	var data_ar = unique(data.split("\n"));
 	var urls="";
 	data_ar.forEach(function(url){
-		if(url!=undefined){
-			urls+="<a href=\""+url+"\">"+url+"</a><br />";
-		}
+		urls+="<a href=\""+url+"\">"+url+"</a><br />";
 	});
 	io.emit(ev, cat, file, urls);
 }
@@ -59,7 +57,6 @@ io.on("connection", function(socket){
 		dirs.forEach(function(dir){
 			fs.readdir(logdir+"/"+dir, function(err, files){
 				if(err) throw err;
-				console.log(files);
 				files.forEach(function(file){
 					fs.readFile(logdir+"/"+dir+"/"+file, "utf8", function(err, data){
 						if(err) throw err;
