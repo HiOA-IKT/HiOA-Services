@@ -4,9 +4,24 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var chokidar = require('chokidar');
 var fs = require('fs');
-var $ = require('jquery');
+//var $ = require('jquery');
+//global.jQuery = $;
 var unique = require('array-unique');
-//var php = require('php');
+//require('bootstrap');
+var vantage = require('vantage')();
+vantage
+	.command("foo")
+	.description("Outputs 'bar'.")
+	.action(function(args,cb){
+		console.log("bar");
+		cb();
+	});
+
+vantage
+	.delimiter('webapp~$')
+	.listen(1234)
+	.show();
+
 var logdir = "/home/***REMOVED***/jmetertesting/logs";
 var watcher = chokidar.watch(logdir, {
 	ignored: /[\/\\]\./, 
