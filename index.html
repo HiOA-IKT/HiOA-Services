@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Services</title>
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+		<link rel="stylesheet" type="text/css" href="services.css">
+		<script>
+			var socket = io();
+			socket.on('err-add', function(cat, msg, urls){
+				var error_element = "<li>";
+				error_element+="	<div class=\"error\">";
+				error_element+=msg;
+				error_element+="		<div class=\"status err-tag\">Error</div>";
+				error_element+="	</div>";
+				error_element+="	<div id=\""+msg.split(" ").join("-")+"-urls\" class=\"urls\">";
+				error_element+=urls;
+				error_element+="	</div>";
+				error_element+="</li>";
+				$("#"+cat+" .dropdown").append(error_element);
+				$("#"+cat).find(".status").attr('class', "status err-tag");
+				$("#"+cat).find(".status").text("Error");
+				setRules();
+			});
+			socket.on('err-update', function(cat, msg, urls){
+				$("#"+msg.split(" ").join("-")+"-urls").html(urls);
+			});
+			socket.on('err-rm', function(cat, msg){
+				$("#"+msg.split(" ").join("-")+"-urls").parent().remove();
+				$("ul").not(':has(li)').siblings(".title").children("div.status").attr('class', "status ok");
+				$("ul").not(':has(li)').siblings(".title").children("div.status").text("OK");
+				$("div.title").not(":has(div.err-tag)").css("background-color","DarkSeaGreen");
+			});
+		</script>
+		<script src="services.js"></script>
+	</head>
+	<body onload="setRules()">
+		<div id="services">
+			<div id="Login" class="service">
+				<div class="title">
+					Login Services
+					<div class="status ok">OK</div>
+				</div>
+				<ul class="dropdown">
+				</ul>
+			</div>
+			<div id="Courses" class="service">
+				<div class="title">
+					Courses
+					<div class="status ok">OK</div>
+				</div>
+				<ul class="dropdown">
+				</ul>
+			</div>
+			<div id="Information" class="service">
+				<div class="title">
+					Information
+					<div class="status ok">OK</div>
+				</div>
+				<ul class="dropdown">
+				</ul>
+			</div>
+			<div id="Solr" class="service">
+				<div class="title">
+					Solr
+					<div class="status ok">OK</div>
+				</div>
+				<ul class="dropdown">
+				</ul>
+			</div>
+			<div id="Profiles" class="service">
+				<div class="title">
+					User Profiles
+					<div class="status ok">OK</div>
+				</div>
+				<ul class="dropdown">
+				</ul>
+			</div>
+		</div>
+		<?php
+			require ("./services.php");
+		?>
+	</body>
+</html>
