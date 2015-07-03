@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+i<!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="utf-8">
@@ -10,92 +10,75 @@
 		<script src="jquery.min.js"></script>
 		<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 		<link rel="stylesheet" type="text/css" href="services.css">
-		<script>
-			var socket = io();
-			socket.on('err-add', function(cat, msg, urls){
-				var error_element = "<li>";
-				error_element+="	<div class=\"error panel panel-danger\">";
-				error_element+="		<div class=\"panel-heading\">";
-				error_element+="			<h5 class=\"panel-title\">";
-				error_element+=msg;
-				error_element+="		<span class=\"label label-danger\">Error</span>";
-				error_element+="		</h5>";
-				error_element+="	</div>";
-				error_element+="	<div id=\""+msg.split(" ").join("-")+"-urls\" class=\"urls panel-body\">";
-				error_element+=urls;
-				error_element+="	</div>";
-				error_element+="</li>";
-				$("#"+cat).find(".errors").append(error_element);
-				$("#"+cat).find(".label").attr('class', "label label-danger");
-				$("#"+cat).find(".label").text("Error");
-				setRules();
-			});
-			socket.on('err-update', function(cat, msg, urls){
-				$("#"+msg.split(" ").join("-")+"-urls").html(urls);
-			});
-			socket.on('err-rm', function(cat, msg){
-				$("#"+msg.split(" ").join("-")+"-urls").parent().parent().remove();
-				$("ul").not(':has(li)').parents(".panel-body").siblings(".panel-heading").children(".panel-title").children(".label").attr('class', "label label-success");
-				$("ul").not(':has(li)').parents(".panel-body").siblings(".panel-heading").children(".panel-title").children(".label").text("OK");
-				$("#"+cat).not(":has(.label-danger)").attr("class", "panel panel-success");
-			});
-		</script>
 		<script src="services.js"></script>
 	</head>
 	<body onload="setRules()">
-		<div id="services">
-			<div id="Login" class="panel panel-success">
-				<div class="panel-heading">
-					<h5 class="panel-title">
-					Login Services<span class="label label-success">OK</span>
-					</h5>
+		<div id="content">
+			<ul class="nav nav-tabs" role="tablist">
+				<li role="presentation" class="active"><a href="#services" aria-controls="services" role="tab" data-toggle="tab">Services</a></li>
+				<li role="presentation"><a href="#testing" aria-controls="tests" role="tab" data-toggle="tab">Testing</a></li>
+			</ul>
+			<div class="tab-content">
+				<div role="tabpanel" class="tab-pane active" id="services">
+					<div id="Login" class="panel panel-success">
+						<div class="panel-heading">
+							<h5 class="panel-title">
+								Login Services<span class="label label-success">OK</span>
+							</h5>
+						</div>
+						<div class="panel-body">
+							<ul class="errors">
+							</ul>
+						</div>
+					</div>
+					<div id="Courses" class="panel panel-success">
+						<div class="panel-heading">
+							<h5 class="panel-title">
+								Courses<span class="label label-success">OK</span>
+							</h5>
+						</div>
+						<div class="panel-body">
+							<ul class="errors">
+							</ul>
+						</div>
+					</div>
+					<div id="Information" class="panel panel-success">
+						<div class="panel-heading">
+							<h5 class="panel-title">
+								Information<span class="label label-success">OK</span>
+							</h5>
+						</div>
+						<div class="panel-body">
+							<ul class="errors">
+							</ul>
+						</div>
+					</div>
+					<div id="Solr" class="panel panel-success">
+						<div class="panel-heading">
+							<h5 class="panel-title">
+								Solr<span class="label label-success">OK</span>
+							</h5>
+						</div>
+						<div class="panel-body">
+							<ul class="errors">
+							</ul>
+						</div>
+					</div>
+					<div id="Profiles" class="panel panel-success">
+						<div class="panel-heading">
+							<h5 class="panel-title">
+								User Profiles<span class="label label-success">OK</span>
+							</h5>
+						</div>
+						<div class="panel-body">
+							<ul class="errors">
+							</ul>
+						</div>
+					</div>
 				</div>
-				<div class="panel-body">
-					<ul class="errors">
-					</ul>
-				</div>
-			</div>
-			<div id="Courses" class="panel panel-success">
-				<div class="panel-heading">
-					<h5 class="panel-title">
-					Courses<span class="label label-success">OK</span>
-					</h5>
-				</div>
-				<div class="panel-body">
-					<ul class="errors">
-					</ul>
-				</div>
-			</div>
-			<div id="Information" class="panel panel-success">
-				<div class="panel-heading">
-					<h5 class="panel-title">
-					Information<span class="label label-success">OK</span>
-					</h5>
-				</div>
-				<div class="panel-body">
-					<ul class="errors">
-					</ul>
-				</div>
-			</div>
-			<div id="Solr" class="panel panel-success">
-				<div class="panel-heading">
-					<h5 class="panel-title">
-					Solr<span class="label label-success">OK</span>
-					</h5>
-				</div>
-				<div class="panel-body">
-					<ul class="errors">
-					</ul>
-				</div>
-			</div>
-			<div id="Profiles" class="panel panel-success">
-				<div class="panel-heading">
-					<h5 class="panel-title">
-					User Profiles<span class="label label-success">OK</span>
-					</h5>
-				</div>
-				<div class="panel-body">
-					<ul class="errors">
+				<div role="tabpanel" class="tab-pane" id="testing">
+					<ul id="tests">
+						
 					</ul>
 				</div>
 			</div>
