@@ -1,4 +1,4 @@
-body{
+body, .panel-body{
 	background: Lavender;
 }
 #services{
@@ -9,69 +9,32 @@ body{
 	border-radius: 10px;
 	padding: 5px;
 }
-div.status{
-	margin: 0px;
-	color: black;
-	padding: 2px;
-	border-radius: 10px;
-	float: right;
-}
-div.ok{
-	background: green;
-}
-div.err-tag{
-	background: #ff4d4d;
-}
-.service, .title, .urls{
-	display:block;
-	margin: 1px;
-	color: black;
-	border-radius: 10px;
-	padding:0;
-}
-.title{
-	background: DarkSeaGreen;
-	border-radius: 10px;
-	border: 1px solid black;
-	padding: 5px;
-}
-.error, .urls{
-	background: #f4cabc;
-	border-radius: 10px;
-	border: 1px solid black;
-	padding: 5px;
-}
-div.title h3{
-	float: left;
-}
 ul{
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
 }
-li div{
-	margin-left: 10px;
-}
-.urls{
-	background-color: AntiqueWhite;
-	margin:0;
-	margin-left: 20px;
-	border: black solid 1px;
-}
-.dropdown, .urls{
+.panel-body{
 	display:none;
+}
+.panel{
+	margin-top: 0;
+	margin-left: 0;
+	margin-right: 0;
+	margin-bottom: 2px;
+}
+.panel-success > .panel-heading{
+	background: DarkSeaGreen;
+}
+.panel-danger > .panel-heading{
+	background: #f4cabc;
+}
+.label{
+	float:right;
 }
 a{
 	color: black;
 }
 a:hover{
 	color: blue;
-}
-html{
-	font-family: 'Lucida';
-	font-size:100%;
-}
-body{
-	font-size:1em;
-	font-family:inherit;
 }

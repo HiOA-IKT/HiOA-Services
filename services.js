@@ -1,14 +1,14 @@
 function setRules(){
-	$(".title").unbind("click");
+	$(".panel-heading").unbind("click");
 	$(".error").unbind("click");
 	// Services, dropping down errors
-	$(".title").click(function(){
-		$(this).siblings(".dropdown").slideToggle("fast");
+	$(".panel-heading").click(function(){
+		$(this).siblings(".panel-body").slideToggle("fast");
 	});
 	// Service errors, dropping down urls
 	$(".error").click(function(){
 		$(this).siblings(".urls").slideToggle("fast");
 	});
-	$("div.title:has(div.err-tag)").css("background-color","#f4cabc");
-	$("div.title").not(":has(div.err-tag)").css("background-color","DarkSeaGreen");
+	$(".panel-title:has(span.label-danger)").parents(".panel").attr("class","panel panel-danger");
+	$(".panel-title").not(":has(span.label-danger)").parents(".panel").attr("class", "panel panel-success");
 }
