@@ -115,7 +115,7 @@ io.on("connection", function(socket){
 		}
 	});
 	socket.on("test_run", function(test, username, password, random_pages, conc, iter, fn){
-		socket.emit("test_started", test.split("/").pop());
+		socket.emit("alert", "info", "Info", test.split("/").pop()+" started.");
 		console.log("Running test...");
 		var command = "bzt \""+test+"\" -o modules.console.disable=true -o execution.scenario.variables.username=\""+username+"\" -o execution.scenario.variables.password=\""+password+"\" -o execution.scenario.variables.random_pages="+random_pages+" -o execution.scenario.variables.logdir=\""+logdir+"\" -o execution.concurrency="+conc+" -o execution.iterations="+iter;
 		console.log(command);
@@ -123,11 +123,26 @@ io.on("connection", function(socket){
 		       console.log('stdout: '+stdout);
 		       console.log('stderr: '+stderr);
 		       if(error !== null){
-			       socket.emit("test_failed", test.split("/").pop(), stderr);
+			       socket.emit("alert", "danger", "Oops!", test.split("/").pop()+" failed with error: "+stderr);
 			       console.log('exec error: ' + error);
 		       } else{
-		       		socket.emit("test_complete", test.split("/").pop());
+		       		socket.emit("alert", "success", "Success!", test.split("/").pop()+" completed successfully.");
 		       }
 	       });
+	});
+	socket.on("clear-errors", function(){
+		socket.emit("alert", "info", "Info", "Clearing errors...");
+		console.log("Clearing errors...");
+		var command = "rm "+logdir+"/*/*";
+		console.log(command);
+		clear_logs = exec(command, function(error, stdout, stderr){
+			console.log("stdout: "+stdout);
+			console.log("stderr: "+stderr);
+			if(error != null){
+				socket.emit("alert", "danger", "Oops!", "Couldn't clear logs: "+stderr);
+			}else{
+				socket.emit("alert", "success", "Success!", "Logs cleared.");
+			}
+		});
 	});
 });

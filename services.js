@@ -54,13 +54,9 @@ socket.on("new-test", function(path, name){
 	test_element+="					<span data-toggle=\"tooltip\" title=\"Random Pages\" class=\"input-group-addon\" id=\"basic-addon3\">?</span>";
 	test_element+="					<input class=\"form-control\" value=\"10\" aria-describedby=\"basic-addon3\" id=\""+name.split(" ").join("-")+"-random_pages\" type=\"number\">";
 	test_element+="				</div>";
-	/*test_element+="				<div class=\"input-group\">";
-	test_element+="					<span data-toggle=\"tooltip\" title=\"Log Directory\" class=\"input-group-addon\" id=\"basic-addon4\">/</span>";
-	test_element+="					<input class=\"form-control\" value=\"../logs\" aria-describedby=\"basic-addon3\" id=\""+name.split(" ").join("-")+"-logdir\" type=\"text\">";
-	test_element+="				</div>";*/
 	test_element+="				<div class=\"input-group\">";
 	test_element+="					<span data-toggle=\"tooltip\" title=\"Concurrency\" class=\"input-group-addon\" id=\"basic-addon4\">||</span>";
-	test_element+="					<input class=\"form-control\" value=\"1\" aria-describedby=\"basic-addon3\" id=\""+name.split(" ").join("-")+"-conc\" type=\"text\">";
+	test_element+="					<input class=\"form-control\" value=\"5\" aria-describedby=\"basic-addon3\" id=\""+name.split(" ").join("-")+"-conc\" type=\"text\">";
 	test_element+="				</div>";
 	test_element+="				<div class=\"input-group\">";
 	test_element+="					<span data-toggle=\"tooltip\" title=\"Iterations\" class=\"input-group-addon\" id=\"basic-addon4\">O</span>";
@@ -69,7 +65,7 @@ socket.on("new-test", function(path, name){
 	test_element+="			</div>";
 	test_element+="		</div>";
 	test_element+="</li>";
-	$("#tests").append(test_element);
+	$("#tests").prepend(test_element);
 	setRules();
 });
 // Set jQuery rules
@@ -83,10 +79,6 @@ function setRules(){
 	$(".btn").click(function(e){
 		e.stopPropagation();
 	});
-	// Service errors, dropping down urls
-	/*$(".error").click(function(){
-	  $(this).siblings(".urls").slideToggle("fast");
-	  });*/
 	$(".nav-tabs a").click(function(e){
 		e.preventDefault();
 		$(this).tab('show');
@@ -100,25 +92,15 @@ function run_test(name, path){
 	var user = document.getElementById(name.split(" ").join("-")+"-username").value;
 	var pass = document.getElementById(name.split(" ").join("-")+"-password").value;
 	var pages = document.getElementById(name.split(" ").join("-")+"-random_pages").value;
-	//var logdir = document.getElementById(name.split(" ").join("-")+"-logdir").value;
 	var conc = document.getElementById(name.split(" ").join("-")+"-conc").value;
 	var iter = document.getElementById(name.split(" ").join("-")+"-iter").value;
 	socket.emit("test_run", path, user, pass, pages, conc, iter);
 }
 // Alerts
-socket.on("test_complete", function(test){
-	insert_alert("success", "Success!", test+" completed successfully.");
-});
-socket.on("test_failed", function(test, error){
-	insert_alert("danger", "Oops!", test+" failed with error: "+error);
-});
-socket.on("test_started", function(test){
-	insert_alert("info", "Info", test+" started.");
-});
-function insert_alert(type, header, msg){
+socket.on("alert", function(type, header, msg){
 	var alert_element="<div class=\"alert alert-block ";
 	alert_element+="alert-"+type+"\" id=\"test-unknown\" role=\"alert\">";
 	alert_element+="<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times</span></button>";
 	alert_element+="<strong class=\"alert-header\">"+header+"</strong><p>"+msg+"</p></div>";
 	$(".alert-container").append(alert_element);	
-}
+});

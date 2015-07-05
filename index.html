@@ -1,4 +1,4 @@
-i<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="utf-8">
@@ -79,7 +79,15 @@ i<!DOCTYPE html>
 				</div>
 				<div role="tabpanel" class="tab-pane" id="testing">
 					<ul id="tests">
-						
+						<li>
+							<div id="clear-errors" class="panel panel-default">
+								<div class="panel-heading">
+									<h5 class="panel-title">
+										Clear errors<button class="btn btn-xs btn-primary" type="button" onclick="socket.emit('clear-errors')">Run Test</button>
+									</h5>
+								</div>
+							</div>
+						</li>
 					</ul>
 				</div>
 			</div>
