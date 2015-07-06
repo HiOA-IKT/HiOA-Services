@@ -97,10 +97,15 @@ function run_test(name, path){
 	socket.emit("test_run", path, user, pass, pages, conc, iter);
 }
 // Alerts
-socket.on("alert", function(type, header, msg){
+socket.on("alert", function(type, header, msg, id){
 	var alert_element="<div class=\"alert alert-block ";
-	alert_element+="alert-"+type+"\" id=\"test-unknown\" role=\"alert\">";
+	alert_element+="alert-"+type+"\" id=\""+id+"\" role=\"alert\">";
 	alert_element+="<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times</span></button>";
 	alert_element+="<strong class=\"alert-header\">"+header+"</strong><p>"+msg+"</p></div>";
-	$(".alert-container").append(alert_element);	
+	$(".alert-container").append(alert_element);
+	window.setTimeout(function(){
+		$("#"+id).fadeTo(500,0).slideUp(500, function(){
+			$(this).remove();
+		});
+	}, 5000);
 });

@@ -4,6 +4,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var chokidar = require('chokidar');
 var fs = require('fs');
+var spawn = require('child_process').spawn;
 var exec = require('child_process').exec;
 //var $ = require('jquery');
 //global.jQuery = $;
@@ -12,6 +13,7 @@ var unique = require('array-unique');
 var vantage = require('vantage')();
 var logdir = "/home/***REMOVED***/jmetertesting/logs";
 var testdir = "/home/***REMOVED***/jmetertesting";
+var count = 0;
 /*vantage
 	.command("cleanlogs")
 	.description("Clears all error logs on the server.")
@@ -115,11 +117,11 @@ io.on("connection", function(socket){
 		}
 	});
 	socket.on("test_run", function(test, username, password, random_pages, conc, iter, fn){
-		socket.emit("alert", "info", "Info", test.split("/").pop()+" started.");
+		socket.emit("alert", "info", "Info", test.split("/").pop()+" started.", "test-info"+count);
 		console.log("Running test...");
 		var command = "bzt \""+test+"\" -o modules.console.disable=true -o execution.scenario.variables.username=\""+username+"\" -o execution.scenario.variables.password=\""+password+"\" -o execution.scenario.variables.random_pages="+random_pages+" -o execution.scenario.variables.logdir=\""+logdir+"\" -o execution.concurrency="+conc+" -o execution.iterations="+iter;
-		console.log(command);
-		yml_test = exec(command, function(error, stdout, stderr){
+		//console.log(command);
+		/*yml_test = exec(command, function(error, stdout, stderr){
 		       console.log('stdout: '+stdout);
 		       console.log('stderr: '+stderr);
 		       if(error !== null){
@@ -128,10 +130,27 @@ io.on("connection", function(socket){
 		       } else{
 		       		socket.emit("alert", "success", "Success!", test.split("/").pop()+" completed successfully.");
 		       }
-	       });
+	       });*/
+		yml_test = spawn("bzt", [test, "-o", "modules.console.disable=true", "-o", "execution.scenario.variables.username="+username, "-o", "execution.scenario.variables.password="+password, "-o", "execution.scenario.variables.random_pages="+random_pages, "-o", "execution.scenario.variables.logdir="+logdir, "-o", "execution.concurrency="+conc, "-o", "execution.iterations="+iter]);
+		yml_test.stdout.on("data", function(data){
+			console.log("stdout: "+ data);
+		});
+		yml_test.stderr.on("data", function(data){
+			console.log("stderr: "+ data);
+		});
+		yml_test.on("exit", function(code){
+			if(code==1){
+				socket.emit("alert", "danger", "Oops!", test.split("/").pop()+" failed.", "test-failed"+count);
+			}
+			else if(code==0){
+				socket.emit("alert", "success", "Success!", test.split("/").pop()+" completed successfully.", "test-success"+count);
+			}
+			console.log("child process exited with code : "+ code);
+		});
+		count++;
 	});
 	socket.on("clear-errors", function(){
-		socket.emit("alert", "info", "Info", "Clearing errors...");
+		socket.emit("alert", "info", "Info", "Clearing errors...", "error-clear"+count);
 		console.log("Clearing errors...");
 		var command = "rm "+logdir+"/*/*";
 		console.log(command);
@@ -139,10 +158,11 @@ io.on("connection", function(socket){
 			console.log("stdout: "+stdout);
 			console.log("stderr: "+stderr);
 			if(error != null){
-				socket.emit("alert", "danger", "Oops!", "Couldn't clear logs: "+stderr);
+				socket.emit("alert", "danger", "Oops!", "Couldn't clear logs: "+stderr, "clear-failed"+count);
 			}else{
-				socket.emit("alert", "success", "Success!", "Logs cleared.");
+				socket.emit("alert", "success", "Success!", "Logs cleared.", "clear-success"+count);
 			}
 		});
+		count++;
 	});
 });

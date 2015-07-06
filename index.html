@@ -18,6 +18,7 @@
 			<ul class="nav nav-tabs" role="tablist">
 				<li role="presentation" class="active"><a href="#services" aria-controls="services" role="tab" data-toggle="tab">Services</a></li>
 				<li role="presentation"><a href="#testing" aria-controls="tests" role="tab" data-toggle="tab">Testing</a></li>
+				<li role="presentation"><a href="#output" aria-controls="output" role="tab" data-toggle="tab">Output</a></li>
 			</ul>
 			<div class="tab-content">
 				<div role="tabpanel" class="tab-pane active" id="services">
@@ -83,10 +84,17 @@
 							<div id="clear-errors" class="panel panel-default">
 								<div class="panel-heading">
 									<h5 class="panel-title">
-										Clear errors<button class="btn btn-xs btn-primary" type="button" onclick="socket.emit('clear-errors')">Run Test</button>
+										Clear errors<button class="btn btn-xs btn-primary" type="button" onclick="socket.emit('clear-errors')">Run</button>
 									</h5>
 								</div>
 							</div>
+						</li>
+					</ul>
+				</div>
+				<div role="tabpanel" class="tab-pane" id="output">
+					<ul id="outputs">
+						<li>
+							
 						</li>
 					</ul>
 				</div>
