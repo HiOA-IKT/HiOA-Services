@@ -11,7 +11,7 @@ socket.on('err-add', function(cat, msg, urls){
 	error_element+="		<span class=\"label label-danger\">Error</span>";
 	error_element+="		</h5>";
 	error_element+="	</div>";
-	error_element+="	<div id=\""+msg.split(" ").join("-")+"-urls\" class=\"urls panel-body\">";
+	error_element+="	<div id=\""+msg.split(" ").join("-").split(".").join("-")+"-urls\" class=\"urls panel-body\">";
 	error_element+=urls;
 	error_element+="	</div>";
 	error_element+="</li>";
@@ -22,11 +22,11 @@ socket.on('err-add', function(cat, msg, urls){
 });
 // Update an error
 socket.on('err-update', function(cat, msg, urls){
-	$("#"+msg.split(" ").join("-")+"-urls").html(urls);
+	$("#"+msg.split(" ").join("-").split(".").join("-")+"-urls").html(urls);
 });
 // Remove an error
 socket.on('err-rm', function(cat, msg){
-	$("#"+msg.split(" ").join("-")+"-urls").parent().parent().remove();
+	$("#"+msg.split(" ").join("-").split(".").join("-")+"-urls").parent().parent().remove();
 	$("ul").not(':has(li)').parents(".panel-body").siblings(".panel-heading").children(".panel-title").children(".label").attr('class', "label label-success");
 	$("ul").not(':has(li)').parents(".panel-body").siblings(".panel-heading").children(".panel-title").children(".label").text("OK");
 	$("#"+cat).not(":has(.label-danger)").attr("class", "panel panel-success");
