@@ -68,6 +68,29 @@ socket.on("new-test", function(path, name){
 	$("#tests").prepend(test_element);
 	setRules();
 });
+socket.on("add-output", function(name){
+	var tablist_element="<li role=\"representation\"><a href=\"#"+name.split(" ").join("-")+"-output\" aria-controls=\""+name.split(" ").join("-")+"-output\" role=\"tab\" data-toggle=\"tab\">"+name;
+	tablist_element+="<button type=\"button\" class=\"close\" data-dismiss=\"output\" aria-label=\"Close\"><span aria-hidden=\"true\">&times</span></button></a></li>";
+	$("#output-list").append(tablist_element);
+	var output_panel="<div role=\"tabpanel\" class=\"tab-pane\" id=\""+name.split(" ").join("-")+"-output\">";
+	output_panel+="		<ul class=\"nav nav-tabs\" role=\"tablist\">";
+	output_panel+="			<li role=\"presentation\" class=\"active\"><a href=\"#"+name.split(" ").join("-")+"-stdout\" aria-controls=\""+name.split(" ").join("-")+"-stdout\" role=\"tab\" data-toggle=\"tab\">Stdout</a></li>";
+	output_panel+="			<li role=\"presentation\"><a href=\"#"+name.split(" ").join("-")+"-stderr\" aria-controls=\""+name.split(" ").join("-")+"-stderr\" role=\"tab\" data-toggle=\"tab\">Stderr</a></li>";
+	output_panel+="		</ul>";
+	output_panel+="		<div class=\"tab-content\">";
+	output_panel+="			<div role=\"tabpanel\" class=\"tab-pane active output\" id=\""+name.split(" ").join("-")+"-stdout\">";
+	output_panel+="			</div>";
+	output_panel+="			<div role=\"tabpanel\" class=\"tab-pane output\" id=\""+name.split(" ").join("-")+"-stderr\">";
+	output_panel+="			</div>";
+	output_panel+="		</div>";
+	output_panel+="</div>";
+	$("#outputs").prepend(output_panel);
+	setRules();
+});
+socket.on("update-output", function(name, data, output){
+	var output_line = "<p>"+data+"</p>";
+	$("#"+name.split(" ").join("-")+"-"+output).append(output_line);
+});
 // Set jQuery rules
 function setRules(){
 	$(".panel-heading").unbind("click");
@@ -82,6 +105,11 @@ function setRules(){
 	$(".nav-tabs a").click(function(e){
 		e.preventDefault();
 		$(this).tab('show');
+	});
+	$('[data-dismiss="output"]').click(function(){
+		var href = $(this).parent().attr('href');
+		$(href).remove();
+		$(this).parent().parent().remove();
 	});
 	$('[data-toggle="tooltip"]').tooltip();
 	$(".panel-title:has(span.label-danger)").parents(".panel").attr("class","panel panel-danger");

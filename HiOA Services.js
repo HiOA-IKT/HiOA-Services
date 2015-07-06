@@ -117,7 +117,8 @@ io.on("connection", function(socket){
 		}
 	});
 	socket.on("test_run", function(test, username, password, random_pages, conc, iter, fn){
-		socket.emit("alert", "info", "Info", test.split("/").pop()+" started.", "test-info"+count);
+		var name = test.split("/").pop().slice(0, -4);
+		socket.emit("alert", "info", "Info", name+" started.", "test-info"+count);
 		console.log("Running test...");
 		var command = "bzt \""+test+"\" -o modules.console.disable=true -o execution.scenario.variables.username=\""+username+"\" -o execution.scenario.variables.password=\""+password+"\" -o execution.scenario.variables.random_pages="+random_pages+" -o execution.scenario.variables.logdir=\""+logdir+"\" -o execution.concurrency="+conc+" -o execution.iterations="+iter;
 		//console.log(command);
@@ -132,18 +133,21 @@ io.on("connection", function(socket){
 		       }
 	       });*/
 		yml_test = spawn("bzt", [test, "-o", "modules.console.disable=true", "-o", "execution.scenario.variables.username="+username, "-o", "execution.scenario.variables.password="+password, "-o", "execution.scenario.variables.random_pages="+random_pages, "-o", "execution.scenario.variables.logdir="+logdir, "-o", "execution.concurrency="+conc, "-o", "execution.iterations="+iter]);
+		socket.emit("add-output", name);
 		yml_test.stdout.on("data", function(data){
+			socket.emit("update-output", name, String.fromCharCode.apply(null, new Uint16Array(data)), "stdout");
 			console.log("stdout: "+ data);
 		});
 		yml_test.stderr.on("data", function(data){
+			socket.emit("update-output", name, String.fromCharCode.apply(null, new Uint16Array(data)), "stderr");
 			console.log("stderr: "+ data);
 		});
 		yml_test.on("exit", function(code){
 			if(code==1){
-				socket.emit("alert", "danger", "Oops!", test.split("/").pop()+" failed.", "test-failed"+count);
+				socket.emit("alert", "danger", "Oops!", name+" failed.", "test-failed"+count);
 			}
 			else if(code==0){
-				socket.emit("alert", "success", "Success!", test.split("/").pop()+" completed successfully.", "test-success"+count);
+				socket.emit("alert", "success", "Success!", name+" completed successfully.", "test-success"+count);
 			}
 			console.log("child process exited with code : "+ code);
 		});

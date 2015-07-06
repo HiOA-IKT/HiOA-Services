@@ -55,3 +55,7 @@ a:hover{
 	width: 20%;
 	z-index: 9999;
 }
+.output{
+	overflow-y: auto;
+	height: 450px;
+}
