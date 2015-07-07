@@ -59,3 +59,16 @@ a:hover{
 	overflow-y: auto;
 	height: 450px;
 }
+.output p{
+	font-size: 12px;
+	font-family: ProFont, Lucida, monospace;
+	margin: 0 0 0 0;
+}
+button[data-dismiss="output"]{
+	margin-left:5px;
+	opacity: 0;
+}
+button[data-dismiss="output"]:hover{
+	display: show;
+	background: rgba(0,0,0,0) none repeat scroll 0 0;
+}
