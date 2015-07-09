@@ -116,11 +116,10 @@ io.on("connection", function(socket){
 			});
 		}
 	});
-	socket.on("test_run", function(test, username, password, random_pages, conc, iter, fn){
+	socket.on("test_run", function(test, username, password, random_pages, conc, iter, pause, server, fn){
 		var name = test.split("/").pop().slice(0, -4);
 		socket.emit("alert", "info", "Info", name+" started.", "test-info"+count);
 		console.log("Running test...");
-		var command = "bzt \""+test+"\" -o modules.console.disable=true -o execution.scenario.variables.username=\""+username+"\" -o execution.scenario.variables.password=\""+password+"\" -o execution.scenario.variables.random_pages="+random_pages+" -o execution.scenario.variables.logdir=\""+logdir+"\" -o execution.concurrency="+conc+" -o execution.iterations="+iter;
 		//console.log(command);
 		/*yml_test = exec(command, function(error, stdout, stderr){
 		       console.log('stdout: '+stdout);
@@ -132,7 +131,7 @@ io.on("connection", function(socket){
 		       		socket.emit("alert", "success", "Success!", test.split("/").pop()+" completed successfully.");
 		       }
 	       });*/
-		yml_test = spawn("bzt", [test, "-o", "modules.console.disable=true", "-o", "execution.scenario.variables.username="+username, "-o", "execution.scenario.variables.password="+password, "-o", "execution.scenario.variables.random_pages="+random_pages, "-o", "execution.scenario.variables.logdir="+logdir, "-o", "execution.concurrency="+conc, "-o", "execution.iterations="+iter]);
+		yml_test = spawn("bzt", [test, "-o", "modules.console.disable=true", "-o", "execution.scenario.variables.username="+username, "-o", "execution.scenario.variables.password="+password, "-o", "execution.scenario.variables.random_pages="+random_pages, "-o", "execution.scenario.variables.logdir="+logdir, "-o", "execution.concurrency="+conc, "-o", "execution.iterations="+iter, "-o", "execution.scenario.variables.pause="+pause, "-o", "execution.scenario.variables.server="+server]);
 		socket.emit("add-output", name);
 		yml_test.stdout.on("data", function(data){
 			socket.emit("update-output", name, String.fromCharCode.apply(null, new Uint16Array(data)), "stdout");

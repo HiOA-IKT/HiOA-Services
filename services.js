@@ -62,6 +62,14 @@ socket.on("new-test", function(path, name){
 	test_element+="					<span data-toggle=\"tooltip\" title=\"Iterations\" class=\"input-group-addon\" id=\"basic-addon4\">O</span>";
 	test_element+="					<input class=\"form-control\" value=\"1\" aria-describedby=\"basic-addon3\" id=\""+name.split(" ").join("-")+"-iter\" type=\"text\">";
 	test_element+="				</div>";
+	test_element+="				<div class=\"input-group\">";
+	test_element+="					<span data-toggle=\"tooltip\" title=\"Pause between requests (ms)\" class=\"input-group-addon\" id=\"basic-addon4\">.</span>";
+	test_element+="					<input class=\"form-control\" value=\"60000\" aria-describedby=\"basic-addon3\" id=\""+name.split(" ").join("-")+"-pause\" type=\"text\">";
+	test_element+="				</div>";
+	test_element+="				<div class=\"input-group\">";
+	test_element+="					<span data-toggle=\"tooltip\" title=\"Server name\" class=\"input-group-addon\" id=\"basic-addon4\">/</span>";
+	test_element+="					<input class=\"form-control\" value=\"testwww.hioa.no\" aria-describedby=\"basic-addon3\" id=\""+name.split(" ").join("-")+"-server\" type=\"text\">";
+	test_element+="				</div>";
 	test_element+="			</div>";
 	test_element+="		</div>";
 	test_element+="</li>";
@@ -122,7 +130,9 @@ function run_test(name, path){
 	var pages = document.getElementById(name.split(" ").join("-")+"-random_pages").value;
 	var conc = document.getElementById(name.split(" ").join("-")+"-conc").value;
 	var iter = document.getElementById(name.split(" ").join("-")+"-iter").value;
-	socket.emit("test_run", path, user, pass, pages, conc, iter);
+	var pause = document.getElementById(name.split(" ").join("-")+"-pause").value;
+	var server = document.getElementById(name.split(" ").join("-")+"-server").value;
+	socket.emit("test_run", path, user, pass, pages, conc, iter, pause, server);
 }
 // Alerts
 socket.on("alert", function(type, header, msg, id){
