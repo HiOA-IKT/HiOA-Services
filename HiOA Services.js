@@ -11,8 +11,8 @@ var exec = require('child_process').exec;
 var unique = require('array-unique');
 //require('bootstrap');
 var vantage = require('vantage')();
-var logdir = "/home/gussef/jmetertesting/logs";
-var testdir = "/home/gussef/jmetertesting";
+var logdir = "***REMOVED***";
+var testdir = "***REMOVED***";
 var count = 0;
 /*vantage
 	.command("cleanlogs")
@@ -85,7 +85,7 @@ function extract_and_emit(ev, cat, file, data, target){
 }
 
 app.use(express.static(__dirname));
-http.listen(process.env.PORT || 80);
+http.listen(process.env.PORT || 8080);
 io.on("connection", function(socket){
 	socket.on("init", function(magicword){
 		if(magicword=="Please"){

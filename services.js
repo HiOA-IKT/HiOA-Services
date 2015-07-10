@@ -44,11 +44,11 @@ socket.on("new-test", function(path, name){
 	test_element+="			<div class=\"options panel-body\">";
 	test_element+="				<div class=\"input-group\">";
 	test_element+="					<span data-toggle=\"tooltip\" title=\"Username\" class=\"input-group-addon\" id=\"basic-addon1\">@</span>";
-	test_element+="					<input class=\"form-control\" value=\"s281188\" aria-describedby=\"basic-addon1\" id=\""+name.split(" ").join("-")+"-username\" type=\"text\">";
+	test_element+="					<input class=\"form-control\" value=\"***REMOVED***\" aria-describedby=\"basic-addon1\" id=\""+name.split(" ").join("-")+"-username\" type=\"text\">";
 	test_element+="				</div>";
 	test_element+="				<div class=\"input-group\">";
 	test_element+="					<span data-toggle=\"tooltip\" title=\"Password\" class=\"input-group-addon\" id=\"basic-addon2\">*</span>";
-	test_element+="					<input class=\"form-control\" value=\"Cikbajat2\" aria-describedby=\"basic-addon2\" id=\""+name.split(" ").join("-")+"-password\" type=\"text\">";
+	test_element+="					<input class=\"form-control\" value=\"***REMOVED***\" aria-describedby=\"basic-addon2\" id=\""+name.split(" ").join("-")+"-password\" type=\"text\">";
 	test_element+="				</div>";
 	test_element+="				<div class=\"input-group\">";
 	test_element+="					<span data-toggle=\"tooltip\" title=\"Server name\" class=\"input-group-addon\" id=\"basic-addon4\">/</span>";
