@@ -11,8 +11,8 @@ var exec = require('child_process').exec;
 var unique = require('array-unique');
 //require('bootstrap');
 var vantage = require('vantage')();
-var logdir = "/home/***REMOVED***/jmetertesting/logs";
-var testdir = "/home/***REMOVED***/jmetertesting";
+var logdir = "/home/gussef/jmetertesting/logs";
+var testdir = "/home/gussef/jmetertesting";
 var count = 0;
 /*vantage
 	.command("cleanlogs")
