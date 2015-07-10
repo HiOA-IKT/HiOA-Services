@@ -1,9 +1,15 @@
 var express = require('express');
 var app = express();
-var http = require('http').Server(app);
+app.use(express.static(__dirname));
+var fs = require('fs');
+var privateKey = fs.readFileSync('***REMOVED***', 'utf8');
+var certificate = fs.readFileSync('***REMOVED***', 'utf8');
+var ca_file = fs.readFileSync('***REMOVED***', 'utf8');
+var credentials = {key: privateKey, cert: certificate, ca: ca_file};
+var http = require('http').createServer(app);
+var https = require('https').createServer(credentials, app);
 var io = require('socket.io')(http);
 var chokidar = require('chokidar');
-var fs = require('fs');
 var spawn = require('child_process').spawn;
 var exec = require('child_process').exec;
 //var $ = require('jquery');
@@ -84,8 +90,8 @@ function extract_and_emit(ev, cat, file, data, target){
 	}
 }
 
-app.use(express.static(__dirname));
-http.listen(process.env.PORT || 8080);
+http.listen(8080);
+https.listen(8443);
 io.on("connection", function(socket){
 	socket.on("init", function(magicword){
 		if(magicword=="Please"){
