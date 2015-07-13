@@ -8,7 +8,7 @@ var ca_file = fs.readFileSync('***REMOVED***', 'utf8');
 var credentials = {key: privateKey, cert: certificate, ca: ca_file};
 var http = require('http').createServer(app);
 var https = require('https').createServer(credentials, app);
-var io = require('socket.io')(http);
+var io = require('socket.io')(https);
 var chokidar = require('chokidar');
 var spawn = require('child_process').spawn;
 var exec = require('child_process').exec;
@@ -17,37 +17,11 @@ var exec = require('child_process').exec;
 var unique = require('array-unique');
 //require('bootstrap');
 var vantage = require('vantage')();
-var logdir = "***REMOVED***";
-var testdir = "***REMOVED***";
+var vars = require('./vars');
+var logdir = vars.logdir;
+var testdir = vars.testdir;
 var count = 0;
-/*vantage
-	.command("cleanlogs")
-	.description("Clears all error logs on the server.")
-	.action(function(args,cb){
-		this.prompt({
-			type: "confirm",
-			name: "continue",
-			default: false,
-			message: "Are you sure you want to clear logs?",
-		}, function(result){
-			if(!result.continue){
-				console.log("Good choice.");
-				cb();
-			} else{
-				console.log("All clean. :)");
-				ls = exec('ls -la ' + logdir, function(error, stdout, stderr){
-					console.log(stdout);
-					cb();
-				});
-			}
-		});
-	});
 
-vantage
-	.delimiter('HiOA Services~$')
-	.listen(1234)
-	.show();
-*/
 var watcher = chokidar.watch(logdir, {
 	ignored: /[\/\\]\./, 
 	persistent: true
@@ -137,7 +111,7 @@ io.on("connection", function(socket){
 		       		socket.emit("alert", "success", "Success!", test.split("/").pop()+" completed successfully.");
 		       }
 	       });*/
-		yml_test = spawn("bzt", [test, "-o", "modules.console.disable=true", "-o", "execution.scenario.variables.username="+username, "-o", "execution.scenario.variables.password="+password, "-o", "execution.scenario.variables.random_pages="+random_pages, "-o", "execution.scenario.variables.logdir="+logdir, "-o", "execution.concurrency="+conc, "-o", "execution.iterations="+iter, "-o", "execution.scenario.variables.pause="+pause, "-o", "execution.scenario.variables.server="+server]);
+		yml_test = spawn("bzt", [test, "-o", "execution.scenario.script="+testdir+"JMX/"+name+".jmx", "-o", "modules.console.disable=true", "-o", "execution.scenario.variables.username="+username, "-o", "execution.scenario.variables.password="+password, "-o", "execution.scenario.variables.random_pages="+random_pages, "-o", "execution.scenario.variables.logdir="+logdir, "-o", "execution.concurrency="+conc, "-o", "execution.iterations="+iter, "-o", "execution.scenario.variables.pause="+pause, "-o", "execution.scenario.variables.server="+server]);
 		socket.emit("add-output", name);
 		yml_test.stdout.on("data", function(data){
 			socket.emit("update-output", name, String.fromCharCode.apply(null, new Uint16Array(data)), "stdout");
