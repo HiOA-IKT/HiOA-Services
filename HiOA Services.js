@@ -40,6 +40,9 @@ passport.use(new LdapStrategy({
 		searchBase: '***REMOVED***',
 		searchFilter: '***REMOVED***'
 	}
+},
+function(user,done){
+	return done(null,user);
 }));
 /*var LdapStrategy = require('passport-ldap').Strategy;
 passport.use(new LdapStrategy({
@@ -135,10 +138,10 @@ passport.serializeUser(function(user, done) {
 passport.deserializeUser(function(user, done) {
 	  done(null, user);
 });
-io.on("connection", function(socket){
+io.sockets.on("connection", function(socket){
   socket.on("init", function(magicword){
     if(magicword=="Please"){
-      console.log("Initializing connected user.");
+      console.log("Initializing "+socket.request.user.uid+" from \""+socket.request.user.department+"\"");
       fs.readdir(testdir, function(err, tests){
 	if(err) throw err;
 	tests.forEach(function(test){
