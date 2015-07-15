@@ -5,15 +5,20 @@ var session = require('express-session');
 var passport = require('passport');
 var redisStore = require('connect-redis')(session);
 var app = express();
+var flash = require('connect-flash');
 var sessionStore = new redisStore({
 	host: '***REMOVED***',
 });
 var passportSocketIo = require('passport.socketio');
-app.use(express.static(__dirname));
+var router = express.Router();
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
-app.use(session({secret: '***REMOVED***', resave: false, saveUninitialized: false, store: sessionStore}));
+app.use(session({secret: '***REMOVED***', resave: false, saveUninitialized: false, store: sessionStore, cookie: {secure:true}}));
+app.use(flash());
+app.use(router);
+app.use(express.static(__dirname));
+app.set('view engine', 'ejs');
 app.use(passport.initialize());
 app.use(passport.session());
 var fs = require('fs');
@@ -32,35 +37,12 @@ var exec = require('child_process').exec;
 var unique = require('array-unique');
 //require('bootstrap');
 var LdapStrategy = require('passport-ldapauth');
-passport.use(new LdapStrategy({
-	server: {
-		url: '***REMOVED***',
-		bindDn: '***REMOVED***',
-		bindCredentials: '***REMOVED***',
-		searchBase: '***REMOVED***',
-		searchFilter: '***REMOVED***'
-	}
-},
+var ldap_opts = require("./ldap.js").opts;
+passport.use(new LdapStrategy(ldap_opts,
 function(user,done){
-	return done(null,user);
+  console.log(user);
+  return done(null,user);
 }));
-/*var LdapStrategy = require('passport-ldap').Strategy;
-passport.use(new LdapStrategy({
-  	server: {
-    		url: '***REMOVED***',
-  	},
-	debug: true,
-  	base: '***REMOVED***',
-  	search: {
-    		filter: '***REMOVED***'
-  	}
-},
-function(profile,done){
-  if(err){
-  	console.log(err);
-  }
-  return done(null, JSON.parse(profile));
-}));*/
     var vars = require('./vars');
     var logdir = vars.logdir;
     var testdir = vars.testdir;
@@ -123,18 +105,27 @@ function onAuthorizeSuccess(data, accept){
 	accept();
 }
 function onAuthorizeFail(data, message, error, accept){
+  	console.log("unsuccessful login: "+message);
 	if(error) accept(new Error(message));
 }
 //app.post("/login", passport.authenticate('ldap', {
 app.post("/login", passport.authenticate('ldapauth', {
   successRedirect: "/services.html",
   failureRedirect: "/",
-})
-);
+  failureFlash: true,
+  userNotFound: "User not found"
+}));
+app.get("/logout", function(req,res){
+	req.logout();
+	res.redirect("/");
+});
+router.get("/", function(req,res){
+	//console.log(req.flash("error"));
+	res.render("index.ejs", {message: req.flash("error")});
+});
 passport.serializeUser(function(user, done) {
 	  done(null, user);
 });
-
 passport.deserializeUser(function(user, done) {
 	  done(null, user);
 });
@@ -142,6 +133,8 @@ io.sockets.on("connection", function(socket){
   socket.on("init", function(magicword){
     if(magicword=="Please"){
       console.log("Initializing "+socket.request.user.uid+" from \""+socket.request.user.department+"\"");
+      //console.log(socket.request.flash());
+      socket.emit("welcome", socket.request.user.uid,socket.request.user.department);
       fs.readdir(testdir, function(err, tests){
 	if(err) throw err;
 	tests.forEach(function(test){

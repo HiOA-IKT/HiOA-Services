@@ -99,6 +99,10 @@ socket.on("update-output", function(name, data, output){
 	var output_line = "<p>"+data+"</p>";
 	$("#"+name.split(" ").join("-")+"-"+output).append(output_line);
 });
+socket.on("welcome", function(user, group){
+	var welcome_element ="<h5>Welcome, <strong>"+user+"</strong></h5><h5><strong>"+group+"</strong></h5><h5><a href=\"/logout\">Log out</a></h5>";
+	$("#welcome").append(welcome_element);
+});
 // Set jQuery rules
 function setRules(){
 	$(".panel-heading").unbind("click");
