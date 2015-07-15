@@ -36,19 +36,18 @@ var unique = require('array-unique');
 var LdapStrategy = require('passport-ldapauth');
 var ldap_opts = conf.ldap_opts;
 passport.use(new LdapStrategy(ldap_opts,
-function(user,done){
-  console.log(user);
-  return done(null,user);
-}));
-    var vars = require('./vars');
-    var logdir = vars.logdir;
-    var testdir = vars.testdir;
-    var count = 0;
+      function(user,done){
+	console.log(user);
+	return done(null,user);
+      }));
+var logdir = conf.logdir;
+var testdir = conf.testdir;
+var count = 0;
 
-    var watcher = chokidar.watch(logdir, {
-      ignored: /[\/\\]\./, 
-	persistent: true
-    });
+var watcher = chokidar.watch(logdir, {
+  ignored: /[\/\\]\./, 
+    persistent: true
+});
 watcher.on('add',function(path){
   fs.readFile(path, "utf8", function(err, data){
     if(err) throw err;
@@ -97,18 +96,18 @@ app.post("/login", passport.authenticate('ldapauth', {
   userNotFound: "User not found"
 }));
 app.get("/logout", function(req,res){
-	req.logout();
-	res.redirect("/");
+  req.logout();
+  res.redirect("/");
 });
 router.get("/", function(req,res){
-	//console.log(req.flash("error"));
-	res.render("index.ejs", {message: req.flash("error")});
+  //console.log(req.flash("error"));
+  res.render("index.ejs", {message: req.flash("error")});
 });
 passport.serializeUser(function(user, done) {
-	  done(null, user);
+  done(null, user);
 });
 passport.deserializeUser(function(user, done) {
-	  done(null, user);
+  done(null, user);
 });
 io.sockets.on("connection", function(socket){
   socket.on("init", function(magicword){
