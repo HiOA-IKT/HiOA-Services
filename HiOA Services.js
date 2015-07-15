@@ -115,7 +115,7 @@ io.sockets.on("connection", function(socket){
       console.log("Initializing "+socket.request.user.uid+" from \""+socket.request.user.department+"\"");
       //console.log(socket.request.flash());
       socket.emit("welcome", socket.request.user.uid,socket.request.user.department);
-      fs.readdir(testdir, function(err, tests){
+      fs.readdir(testdir+"/"+socket.request.user.department, function(err, tests){
 	if(err) throw err;
 	tests.forEach(function(test){
 	  var ext = test.substr(test.lastIndexOf('.')+1);
@@ -125,13 +125,14 @@ io.sockets.on("connection", function(socket){
 	  }
 	});
       });
-      fs.readdir(logdir, function(err, dirs){
+      fs.readdir(logdir+"/"+socket.request.user.department, function(err, dirs){
 	if(err) throw err;
 	dirs.forEach(function(dir){
-	  fs.readdir(logdir+"/"+dir, function(err, files){
+	  socket.emit("cat-add", dir);
+	  fs.readdir(logdir+"/"+socket.request.user.department+"/"+dir, function(err, files){
 	    if(err) throw err;
 	    files.forEach(function(file){
-	      fs.readFile(logdir+"/"+dir+"/"+file, "utf8", function(err, data){
+	      fs.readFile(logdir+"/"+socket.request.user.department+"/"+dir+"/"+file, "utf8", function(err, data){
 		if(err) throw err;
 		extract_and_emit("err-add", dir, file, data, socket);
 	      });

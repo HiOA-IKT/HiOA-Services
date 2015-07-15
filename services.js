@@ -31,6 +31,20 @@ socket.on('err-rm', function(cat, msg){
 	$("ul").not(':has(li)').parents(".panel-body").siblings(".panel-heading").children(".panel-title").children(".label").text("OK");
 	$("#"+cat).not(":has(.label-danger)").attr("class", "panel panel-success");
 });
+socket.on("cat-add", function(cat){
+	var cat_element="<div id=\""+cat+"\" class=\"panel panel-success\">";  
+	cat_element+="<div class=\"panel-heading\">";  
+	cat_element+="<h5 class=\"panel-title\">";  
+	cat_element+=cat+"<span class=\"label label-success\">OK</span>";  
+	cat_element+="</h5>";  
+	cat_element+="</div>";  
+	cat_element+="<div class=\"panel-body\">";  
+	cat_element+="<ul class=\"errors\">";  
+	cat_element+="</ul>";  
+	cat_element+="</div>";  
+	cat_element+="</div>";
+	$("#services").append(cat_element);
+});
 // Send tests to clients
 socket.on("new-test", function(path, name){
 	var test_element="<li>";
