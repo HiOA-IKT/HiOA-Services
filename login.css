@@ -1,0 +1,20 @@
+body{
+  background: Lavender none repeat scroll 0 0;
+}
+#content{
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 30px;
+  width: 30%;
+  border-radius: 10px;
+  padding: 5px;
+}
+.well{
+  text-align: center;
+}
+button[type="submit"]{
+  margin-top: 7px;
+}
+form{
+  margin-top: 25px;
+}
