@@ -1,20 +1,20 @@
+var conf = require('./conf.js');
 var express = require('express');
+var session = conf.session;
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var session = require('express-session');
 var passport = require('passport');
-var redisStore = require('connect-redis')(session);
 var app = express();
 var flash = require('connect-flash');
-var sessionStore = new redisStore({
-	host: '***REMOVED***',
-});
 var passportSocketIo = require('passport.socketio');
 var router = express.Router();
+var session_opts = conf.session_opts;
+var sessionStore = conf.sessionStore;
+var passportSocketIo_opts = conf.passportSocketIo_opts;
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
-app.use(session({secret: '***REMOVED***', resave: false, saveUninitialized: false, store: sessionStore, cookie: {secure:true}}));
+app.use(session(session_opts));
 app.use(flash());
 app.use(router);
 app.use(express.static(__dirname));
@@ -22,10 +22,7 @@ app.set('view engine', 'ejs');
 app.use(passport.initialize());
 app.use(passport.session());
 var fs = require('fs');
-var privateKey = fs.readFileSync('***REMOVED***', 'utf8');
-var certificate = fs.readFileSync('***REMOVED***', 'utf8');
-var ca_file = fs.readFileSync('***REMOVED***', 'utf8');
-var credentials = {key: privateKey, cert: certificate, ca: ca_file};
+var credentials = conf.credentials;
 var http = require('http').createServer(app);
 var https = require('https').createServer(credentials, app);
 var io = require('socket.io')(https);
@@ -37,7 +34,7 @@ var exec = require('child_process').exec;
 var unique = require('array-unique');
 //require('bootstrap');
 var LdapStrategy = require('passport-ldapauth');
-var ldap_opts = require("./ldap.js").opts;
+var ldap_opts = conf.ldap_opts;
 passport.use(new LdapStrategy(ldap_opts,
 function(user,done){
   console.log(user);
@@ -92,23 +89,7 @@ function extract_and_emit(ev, cat, file, data, target){
 
 http.listen(8080);
 https.listen(8443);
-io.use(passportSocketIo.authorize({
-	cookieParser: cookieParser,
-	key: '***REMOVED***',
-	secret: '***REMOVED***',
-	store: sessionStore,
-	success: onAuthorizeSuccess,
-	fail: onAuthorizeFail,
-}));
-function onAuthorizeSuccess(data, accept){
-	console.log('successful connection to socket.io');
-	accept();
-}
-function onAuthorizeFail(data, message, error, accept){
-  	console.log("unsuccessful login: "+message);
-	if(error) accept(new Error(message));
-}
-//app.post("/login", passport.authenticate('ldap', {
+io.use(passportSocketIo.authorize(passportSocketIo_opts));
 app.post("/login", passport.authenticate('ldapauth', {
   successRedirect: "/services.html",
   failureRedirect: "/",
