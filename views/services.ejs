@@ -1,53 +1,53 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Services</title>
-<script src="/socket.io/socket.io.js"></script>
-<!--<script src="http://code.jquery.com/jquery-1.11.3.js"></script>-->
-<script src="jquery.min.js"></script>
-<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
-<link href="bootstrap/css/bootstrap-theme.css" rel="stylesheet">
-<link rel="stylesheet" type="text/css" href="services.css">
-<script src="services.js"></script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Services</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <!--<script src="http://code.jquery.com/jquery-1.11.3.js"></script>-->
+  <script src="jquery.min.js"></script>
+  <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="bootstrap/css/bootstrap-theme.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="services.css">
+  <script src="services.js"></script>
 </head>
 <body onload="setRules()">
-<div id="welcome">
-</div>
-<div id="content">
-  <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active"><a href="#services" aria-controls="services" role="tab" data-toggle="tab">Services</a></li>
-    <li role="presentation"><a href="#testing" aria-controls="tests" role="tab" data-toggle="tab">Testing</a></li>
-    <li role="presentation"><a href="#output" aria-controls="output" role="tab" data-toggle="tab">Output</a></li>
-  </ul>
-  <div class="tab-content">
-    <div role="tabpanel" class="tab-pane active" id="services">
-    </div>
+  <div class="well" id="welcome">
+  </div>
+  <div id="content">
+    <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active"><a href="#services" aria-controls="services" role="tab" data-toggle="tab">Services</a></li>
+      <li role="presentation"><a href="#testing" aria-controls="tests" role="tab" data-toggle="tab">Testing</a></li>
+      <li role="presentation"><a href="#output" aria-controls="output" role="tab" data-toggle="tab">Output</a></li>
+    </ul>
+    <div class="tab-content">
+      <div role="tabpanel" class="tab-pane active" id="services">
+      </div>
       <div role="tabpanel" class="tab-pane" id="testing">
-      <ul id="tests">
-	<li>
-	<div id="clear-errors" class="panel panel-default">
-	  <div class="panel-heading">
-	    <h5 class="panel-title">
-	      Clear errors<button class="btn btn-xs btn-primary" type="button" onclick="socket.emit('clear-errors')">Run</button>
-	    </h5>
-	  </div>
-	</div>
-	</li>
-      </ul>
-    </div>
-    <div role="tabpanel" class="tab-pane" id="output">
-      <ul class="nav nav-tabs" role="tablist" id="output-list">
-      </ul>
-      <div class="tab-content" id="outputs">
+        <ul id="tests">
+	  <li>
+	    <div id="clear-errors" class="panel panel-default">
+	      <div class="panel-heading">
+	        <h5 class="panel-title">
+	          Clear errors<button class="btn btn-xs btn-primary" type="button" onclick="socket.emit('clear-errors')">Run</button>
+	        </h5>
+	      </div>
+	    </div>
+	  </li>
+        </ul>
+      </div>
+      <div role="tabpanel" class="tab-pane" id="output">
+        <ul class="nav nav-tabs" role="tablist" id="output-list">
+        </ul>
+        <div class="tab-content" id="outputs">
+        </div>
       </div>
     </div>
   </div>
-</div>
-<div class="alert-container">
-</div>
-<script src="bootstrap/js/bootstrap.min.js"></script>
+  <div class="alert-container">
+  </div>
+  <script src="bootstrap/js/bootstrap.min.js"></script>
 </body>
 </html>

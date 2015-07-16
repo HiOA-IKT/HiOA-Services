@@ -11,6 +11,7 @@ var router = express.Router();
 var session_opts = conf.session_opts;
 var sessionStore = conf.sessionStore;
 var passportSocketIo_opts = conf.passportSocketIo_opts;
+var encoding = require('encoding');
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
@@ -124,7 +125,6 @@ io.sockets.on("connection", function(socket){
   socket.on("init", function(magicword){
     if(magicword=="Please"){
       console.log("Initializing "+socket.request.user.uid+" from \""+socket.request.user.department+"\"");
-      //console.log(socket.request.flash());
       socket.emit("welcome", socket.request.user.uid,socket.request.user.department);
       if(fs.statSync(testdir+"/"+socket.request.user.department).isDirectory()){
 	fs.readdir(testdir+"/"+socket.request.user.department, function(err, tests){
@@ -148,7 +148,7 @@ io.sockets.on("connection", function(socket){
 	    fs.readdir(logdir+"/"+socket.request.user.department+"/"+dir, function(err, files){
 	      if(err) throw err;
 	      files.forEach(function(file){
-	        //console.log("Reading "+logdir+"/"+socket.request.user.department+"/"+dir+"/"+file);
+		//console.log("Reading "+logdir+"/"+socket.request.user.department+"/"+dir+"/"+file);
 		fs.readFile(logdir+"/"+socket.request.user.department+"/"+dir+"/"+file, "utf8", function(err, data){
 		  if(err) throw err;
 		  extract_and_emit("err-add", dir, file, data, socket);
@@ -175,7 +175,12 @@ io.sockets.on("connection", function(socket){
       socket.emit("alert", "success", "Success!", test.split("/").pop()+" completed successfully.");
       }
       });*/
-    yml_test = spawn("bzt", [test, "-o", "execution.scenario.script="+testdir+"JMX/"+name+".jmx", "-o", "modules.console.disable=true", "-o", "execution.scenario.variables.username="+username, "-o", "execution.scenario.variables.password="+password, "-o", "execution.scenario.variables.random_pages="+random_pages, "-o", "execution.scenario.variables.logdir="+logdir+"/"+socket.request.user.department+"/", "-o", "execution.concurrency="+conc, "-o", "execution.iterations="+iter, "-o", "execution.scenario.variables.pause="+pause, "-o", "execution.scenario.variables.server="+server]);
+    if(name=="Log Replay" || name=="HiOA Tester Overlord"){
+      yml_test = spawn("bzt", [test, "-o", "execution.scenario.script="+testdir+"JMX/"+name+".jmx", "-o", "modules.console.disable=true", "-o", "execution.scenario.variables.username="+username, "-o", "execution.scenario.variables.password="+password, "-o", "execution.scenario.variables.random_pages="+random_pages, "-o", "execution.scenario.variables.logdir="+logdir+"/"+socket.request.user.department+"/", "-o", "execution.concurrency="+conc, "-o", "execution.iterations="+iter, "-o", "execution.scenario.variables.pause="+pause, "-o", "execution.scenario.variables.server="+server]);
+    }
+    else{
+      yml_test = spawn("bzt", [test, "-o", "execution.scenario.script="+testdir+"JMX/Student Tester Overlord.jmx", "-o", "modules.console.disable=true", "-o", "execution.scenario.variables.username="+username, "-o", "execution.scenario.variables.password="+password, "-o", "execution.scenario.variables.random_pages="+random_pages, "-o", "execution.scenario.variables.logdir="+logdir+"/"+socket.request.user.department+"/", "-o", "execution.concurrency="+conc, "-o", "execution.iterations="+iter, "-o", "execution.scenario.variables.pause="+pause, "-o", "execution.scenario.variables.server="+server]);
+    }
     socket.emit("add-output", name);
     yml_test.stdout.on("data", function(data){
       socket.emit("update-output", name, String.fromCharCode.apply(null, new Uint16Array(data)), "stdout");
