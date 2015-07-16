@@ -20,7 +20,7 @@ app.use(router);
 app.use(express.static(__dirname));
 app.set('view engine', 'ejs');
 app.use(passport.initialize());
-app.use(passport.session());
+app.use(passport.session({store: sessionStore}));
 var fs = require('fs');
 var credentials = conf.credentials;
 var http = require('http').createServer(app);
@@ -90,6 +90,7 @@ http.listen(8080);
 https.listen(8443);
 io.use(passportSocketIo.authorize(passportSocketIo_opts));
 app.post("/login", passport.authenticate('ldapauth', {
+  session: true,
   successRedirect: "/services.html",
   failureRedirect: "/",
   failureFlash: true,
@@ -99,10 +100,20 @@ app.get("/logout", function(req,res){
   req.logout();
   res.redirect("/");
 });
+router.get("/services.html", function(req,res){
+  console.log(req.isAuthenticated());
+  if(req.isAuthenticated()) res.render("services.ejs");
+  //else res.redirect("/");
+  res.render("services.ejs");
+});
 router.get("/", function(req,res){
   //console.log(req.flash("error"));
   res.render("index.ejs", {message: req.flash("error")});
 });
+//router.all("*", function(req,res,next){
+//  res.header("Access-Control-Allow-Credentials", true);
+//  next()i;
+//});
 passport.serializeUser(function(user, done) {
   done(null, user);
 });
@@ -115,37 +126,44 @@ io.sockets.on("connection", function(socket){
       console.log("Initializing "+socket.request.user.uid+" from \""+socket.request.user.department+"\"");
       //console.log(socket.request.flash());
       socket.emit("welcome", socket.request.user.uid,socket.request.user.department);
-      fs.readdir(testdir+"/"+socket.request.user.department, function(err, tests){
-	if(err) throw err;
-	tests.forEach(function(test){
-	  var ext = test.substr(test.lastIndexOf('.')+1);
-	  if(ext=="yml"){
-	    var name = test.slice(0, -4);
-	    socket.emit("new-test", testdir+"/"+test, name);
-	  }
+      if(fs.statSync(testdir+"/"+socket.request.user.department).isDirectory()){
+	fs.readdir(testdir+"/"+socket.request.user.department, function(err, tests){
+	  //console.log("Reading "+testdir+socket.request.user.department);
+	  if(err) throw err;
+	  tests.forEach(function(test){
+	    //console.log("Reading "+testdir+socket.request.user.department+"/"+test);
+	    var ext = test.substr(test.lastIndexOf('.')+1);
+	    if(ext=="yml"){
+	      var name = test.slice(0, -4);
+	      socket.emit("new-test", testdir+socket.request.user.department+"/"+test, name);
+	    }
+	  });
 	});
-      });
-      fs.readdir(logdir+"/"+socket.request.user.department, function(err, dirs){
-	if(err) throw err;
-	dirs.forEach(function(dir){
-	  socket.emit("cat-add", dir);
-	  fs.readdir(logdir+"/"+socket.request.user.department+"/"+dir, function(err, files){
-	    if(err) throw err;
-	    files.forEach(function(file){
-	      fs.readFile(logdir+"/"+socket.request.user.department+"/"+dir+"/"+file, "utf8", function(err, data){
-		if(err) throw err;
-		extract_and_emit("err-add", dir, file, data, socket);
+	fs.readdir(logdir+"/"+socket.request.user.department, function(err, dirs){
+	  //console.log("Reading "+logdir+"/"+socket.request.user.department);
+	  if(err) throw err;
+	  dirs.forEach(function(dir){
+	    //console.log("Reading "+logdir+"/"+socket.request.user.department+"/"+dir);
+	    socket.emit("cat-add", dir);
+	    fs.readdir(logdir+"/"+socket.request.user.department+"/"+dir, function(err, files){
+	      if(err) throw err;
+	      files.forEach(function(file){
+	        //console.log("Reading "+logdir+"/"+socket.request.user.department+"/"+dir+"/"+file);
+		fs.readFile(logdir+"/"+socket.request.user.department+"/"+dir+"/"+file, "utf8", function(err, data){
+		  if(err) throw err;
+		  extract_and_emit("err-add", dir, file, data, socket);
+		});
 	      });
 	    });
 	  });
 	});
-      });
+      }
     }
   });
   socket.on("test_run", function(test, username, password, random_pages, conc, iter, pause, server, fn){
     var name = test.split("/").pop().slice(0, -4);
     socket.emit("alert", "info", "Info", name+" started.", "test-info"+count);
-    console.log("Running test...");
+    console.log(socket.request.user.uid+" is running \""+name+"\"");
     //console.log(command);
     /*yml_test = exec(command, function(error, stdout, stderr){
       console.log('stdout: '+stdout);
@@ -157,15 +175,15 @@ io.sockets.on("connection", function(socket){
       socket.emit("alert", "success", "Success!", test.split("/").pop()+" completed successfully.");
       }
       });*/
-    yml_test = spawn("bzt", [test, "-o", "execution.scenario.script="+testdir+"JMX/"+name+".jmx", "-o", "modules.console.disable=true", "-o", "execution.scenario.variables.username="+username, "-o", "execution.scenario.variables.password="+password, "-o", "execution.scenario.variables.random_pages="+random_pages, "-o", "execution.scenario.variables.logdir="+logdir, "-o", "execution.concurrency="+conc, "-o", "execution.iterations="+iter, "-o", "execution.scenario.variables.pause="+pause, "-o", "execution.scenario.variables.server="+server]);
+    yml_test = spawn("bzt", [test, "-o", "execution.scenario.script="+testdir+"JMX/"+name+".jmx", "-o", "modules.console.disable=true", "-o", "execution.scenario.variables.username="+username, "-o", "execution.scenario.variables.password="+password, "-o", "execution.scenario.variables.random_pages="+random_pages, "-o", "execution.scenario.variables.logdir="+logdir+"/"+socket.request.user.department+"/", "-o", "execution.concurrency="+conc, "-o", "execution.iterations="+iter, "-o", "execution.scenario.variables.pause="+pause, "-o", "execution.scenario.variables.server="+server]);
     socket.emit("add-output", name);
     yml_test.stdout.on("data", function(data){
       socket.emit("update-output", name, String.fromCharCode.apply(null, new Uint16Array(data)), "stdout");
-      console.log("stdout: "+ data);
+      //console.log("stdout: "+ data);
     });
     yml_test.stderr.on("data", function(data){
       socket.emit("update-output", name, String.fromCharCode.apply(null, new Uint16Array(data)), "stderr");
-      console.log("stderr: "+ data);
+      //console.log("stderr: "+ data);
     });
     yml_test.on("exit", function(code){
       if(code==1){
@@ -180,8 +198,8 @@ io.sockets.on("connection", function(socket){
   });
   socket.on("clear-errors", function(){
     socket.emit("alert", "info", "Info", "Clearing errors...", "error-clear"+count);
-    console.log("Clearing errors...");
-    var command = "rm "+logdir+"/*/*";
+    console.log(socket.request.user.uid+" is clearing errors...");
+    var command = "rm "+logdir+"/\""+socket.request.user.department+"\"/*/*";
     console.log(command);
     clear_logs = exec(command, function(error, stdout, stderr){
       console.log("stdout: "+stdout);
