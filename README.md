@@ -1,16 +1,15 @@
 HiOA Services
 ================
 
-Sanitized version of HiOA Services
-
+HiOA Services acts as a frontend for the testing framework I developed for **Oslo and Akershus University College of Applied Sciences**.
 Run
 ------------
 ```sh
-#node HiOA Services
+# node "HiOA Services.js"
 ```
 
 CONTACT
 -------
 
 Karl August Hoivik
-gussefant@gmail.com
+gussefant(at)gmail(dot)com
