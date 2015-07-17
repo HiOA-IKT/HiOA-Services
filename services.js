@@ -46,7 +46,7 @@ socket.on("cat-add", function(cat){
   $("#services").append(cat_element);
 });
 // Send tests to clients
-socket.on("new-test", function(path, name){
+socket.on("new-test", function(path, name, default_val){
   var test_element="<li>";
   test_element+="		<div id=\""+name.split(" ").join("-")+"\" class=\"panel panel-default\">";
   test_element+="			<div class=\"panel-heading\">";
@@ -58,31 +58,31 @@ socket.on("new-test", function(path, name){
   test_element+="			<div class=\"options panel-body\">";
   test_element+="				<div class=\"input-group\">";
   test_element+="					<span data-toggle=\"tooltip\" title=\"Username\" class=\"input-group-addon\" id=\"basic-addon1\">@</span>";
-  test_element+="					<input class=\"form-control\" value=\"***REMOVED***\" aria-describedby=\"basic-addon1\" id=\""+name.split(" ").join("-")+"-username\" type=\"text\">";
+  test_element+="					<input class=\"form-control\" value=\""+default_val.username+"\" aria-describedby=\"basic-addon1\" id=\""+name.split(" ").join("-")+"-username\" type=\"text\">";
   test_element+="				</div>";
   test_element+="				<div class=\"input-group\">";
   test_element+="					<span data-toggle=\"tooltip\" title=\"Password\" class=\"input-group-addon\" id=\"basic-addon2\">*</span>";
-  test_element+="					<input class=\"form-control\" value=\"***REMOVED***\" aria-describedby=\"basic-addon2\" id=\""+name.split(" ").join("-")+"-password\" type=\"text\">";
+  test_element+="					<input class=\"form-control\" value=\""+default_val.password+"\" aria-describedby=\"basic-addon2\" id=\""+name.split(" ").join("-")+"-password\" type=\"text\">";
   test_element+="				</div>";
   test_element+="				<div class=\"input-group\">";
   test_element+="					<span data-toggle=\"tooltip\" title=\"Server name\" class=\"input-group-addon\" id=\"basic-addon4\">/</span>";
-  test_element+="					<input class=\"form-control\" value=\"testwww.hioa.no\" aria-describedby=\"basic-addon3\" id=\""+name.split(" ").join("-")+"-server\" type=\"text\">";
+  test_element+="					<input class=\"form-control\" value=\""+default_val.server+"\" aria-describedby=\"basic-addon3\" id=\""+name.split(" ").join("-")+"-server\" type=\"text\">";
   test_element+="				</div>";
   test_element+="				<div class=\"input-group\">";
   test_element+="					<span data-toggle=\"tooltip\" title=\"Random Pages\" class=\"input-group-addon\" id=\"basic-addon3\">?</span>";
-  test_element+="					<input class=\"form-control\" value=\"10\" aria-describedby=\"basic-addon3\" id=\""+name.split(" ").join("-")+"-random_pages\" type=\"number\">";
+  test_element+="					<input class=\"form-control\" value=\""+default_val.random_pages+"\" aria-describedby=\"basic-addon3\" id=\""+name.split(" ").join("-")+"-random_pages\" type=\"number\">";
   test_element+="				</div>";
   test_element+="				<div class=\"input-group\">";
   test_element+="					<span data-toggle=\"tooltip\" title=\"Concurrency\" class=\"input-group-addon\" id=\"basic-addon4\">||</span>";
-  test_element+="					<input class=\"form-control\" value=\"5\" aria-describedby=\"basic-addon3\" id=\""+name.split(" ").join("-")+"-conc\" type=\"number\">";
+  test_element+="					<input class=\"form-control\" value=\""+default_val.conc+"\" aria-describedby=\"basic-addon3\" id=\""+name.split(" ").join("-")+"-conc\" type=\"number\">";
   test_element+="				</div>";
   test_element+="				<div class=\"input-group\">";
   test_element+="					<span data-toggle=\"tooltip\" title=\"Iterations\" class=\"input-group-addon\" id=\"basic-addon4\">O</span>";
-  test_element+="					<input class=\"form-control\" value=\"1\" aria-describedby=\"basic-addon3\" id=\""+name.split(" ").join("-")+"-iter\" type=\"number\">";
+  test_element+="					<input class=\"form-control\" value=\""+default_val.iter+"\" aria-describedby=\"basic-addon3\" id=\""+name.split(" ").join("-")+"-iter\" type=\"number\">";
   test_element+="				</div>";
   test_element+="				<div class=\"input-group\">";
   test_element+="					<span data-toggle=\"tooltip\" title=\"Pause between requests (ms)\" class=\"input-group-addon\" id=\"basic-addon4\">.</span>";
-  test_element+="					<input class=\"form-control\" value=\"60000\" aria-describedby=\"basic-addon3\" id=\""+name.split(" ").join("-")+"-pause\" type=\"number\">";
+  test_element+="					<input class=\"form-control\" value=\""+default_val.pause+"\" aria-describedby=\"basic-addon3\" id=\""+name.split(" ").join("-")+"-pause\" type=\"number\">";
   test_element+="				</div>";
   test_element+="			</div>";
   test_element+="		</div>";

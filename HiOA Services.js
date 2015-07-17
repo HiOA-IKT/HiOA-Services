@@ -36,6 +36,7 @@ var unique = require('array-unique');
 //require('bootstrap');
 var LdapStrategy = require('passport-ldapauth');
 var ldap_opts = conf.ldap_opts;
+var default_val = conf.default_val;
 passport.use(new LdapStrategy(ldap_opts,
       function(user,done){
 	console.log(user);
@@ -103,9 +104,8 @@ app.get("/logout", function(req,res){
 });
 router.get("/services.html", function(req,res){
   console.log(req.isAuthenticated());
-  if(req.isAuthenticated()) res.render("services.ejs");
-  //else res.redirect("/");
-  res.render("services.ejs");
+  if(req.cookies) res.render("services.ejs");
+  else res.redirect("/");
 });
 router.get("/", function(req,res){
   //console.log(req.flash("error"));
@@ -125,6 +125,7 @@ io.sockets.on("connection", function(socket){
   socket.on("init", function(magicword){
     if(magicword=="Please"){
       console.log("Initializing "+socket.request.user.uid+" from \""+socket.request.user.department+"\"");
+      //console.log(socket.request.user);
       socket.emit("welcome", socket.request.user.uid,socket.request.user.department);
       if(fs.statSync(testdir+"/"+socket.request.user.department).isDirectory()){
 	fs.readdir(testdir+"/"+socket.request.user.department, function(err, tests){
@@ -135,7 +136,7 @@ io.sockets.on("connection", function(socket){
 	    var ext = test.substr(test.lastIndexOf('.')+1);
 	    if(ext=="yml"){
 	      var name = test.slice(0, -4);
-	      socket.emit("new-test", testdir+socket.request.user.department+"/"+test, name);
+	      socket.emit("new-test", testdir+socket.request.user.department+"/"+test, name, default_val);
 	    }
 	  });
 	});
