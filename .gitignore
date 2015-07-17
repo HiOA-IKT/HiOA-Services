@@ -2,3 +2,5 @@
 bootstrap/
 node_modules/
 conf.js
+nonos.txt
+check.sh
