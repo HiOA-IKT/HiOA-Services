@@ -11,7 +11,6 @@ var router = express.Router();
 var session_opts = conf.session_opts;
 var sessionStore = conf.sessionStore;
 var passportSocketIo_opts = conf.passportSocketIo_opts;
-var encoding = require('encoding');
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
@@ -111,7 +110,7 @@ router.get("/", function(req,res){
   //console.log(req.flash("error"));
   res.render("index.ejs", {message: req.flash("error")});
 });
-//router.all("*", function(req,res,next){
+//irouter.all("*", function(req,res,next){
 //  res.header("Access-Control-Allow-Credentials", true);
 //  next()i;
 //});
@@ -124,7 +123,7 @@ passport.deserializeUser(function(user, done) {
 io.sockets.on("connection", function(socket){
   socket.on("init", function(magicword){
     if(magicword=="Please"){
-      console.log("Initializing "+socket.request.user.uid+" from \""+socket.request.user.department+"\"");
+      console.log(socket.request.user.uid+" from \""+socket.request.user.department+"\"");
       //console.log(socket.request.user);
       socket.emit("welcome", socket.request.user.uid,socket.request.user.department);
       if(fs.statSync(testdir+"/"+socket.request.user.department).isDirectory()){
@@ -144,7 +143,7 @@ io.sockets.on("connection", function(socket){
 	  //console.log("Reading "+logdir+"/"+socket.request.user.department);
 	  if(err) throw err;
 	  dirs.forEach(function(dir){
-	    //console.log("Reading "+logdir+"/"+socket.request.user.department+"/"+dir);
+	    console.log(socket.request.user.uid+": got "+dir);
 	    socket.emit("cat-add", dir);
 	    fs.readdir(logdir+"/"+socket.request.user.department+"/"+dir, function(err, files){
 	      if(err) throw err;
