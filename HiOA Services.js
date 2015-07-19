@@ -23,16 +23,12 @@ app.use(passport.initialize());
 app.use(passport.session({store: sessionStore}));
 var fs = require('fs');
 var credentials = conf.credentials;
-var http = require('http').createServer(app);
 var https = require('https').createServer(credentials, app);
 var io = require('socket.io')(https);
 var chokidar = require('chokidar');
 var spawn = require('child_process').spawn;
 var exec = require('child_process').exec;
-//var $ = require('jquery');
-//global.jQuery = $;
 var unique = require('array-unique');
-//require('bootstrap');
 var LdapStrategy = require('passport-ldapauth');
 var ldap_opts = conf.ldap_opts;
 var default_val = conf.default_val;
@@ -86,7 +82,6 @@ function extract_and_emit(ev, cat, file, data, target){
   }
 }
 
-http.listen(8080);
 https.listen(8443);
 io.use(passportSocketIo.authorize(passportSocketIo_opts));
 app.post("/login", passport.authenticate('ldapauth', {
