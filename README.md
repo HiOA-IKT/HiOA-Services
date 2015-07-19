@@ -5,7 +5,10 @@ HiOA Services acts as a frontend for the testing framework I developed for **Osl
 Run
 ------------
 ```sh
-# node "HiOA Services.js"
+# npm install //Install dependencies from package.json
+# node "HiOA Services.js" //Start server
+  or
+# npm start
 ```
 
 CONTACT
