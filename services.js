@@ -1,4 +1,5 @@
 var socket = io();
+var output_count = 0;
 // Get data from server
 socket.emit("init", "Please");
 // Add a new error
@@ -91,10 +92,10 @@ socket.on("new-test", function(path, name, default_val){
   setRules();
 });
 socket.on("add-output", function(name){
-  var tablist_element="<li role=\"representation\"><a href=\"#"+name.split(" ").join("-")+"-output\" aria-controls=\""+name.split(" ").join("-")+"-output\" role=\"tab\" data-toggle=\"tab\">"+name;
+  var tablist_element="<li role=\"representation\"><a href=\"#"+name.split(" ").join("-")+output_count+"-output\" aria-controls=\""+name.split(" ").join("-")+"-output\" role=\"tab\" data-toggle=\"tab\">"+name;
   tablist_element+="<button type=\"button\" class=\"close\" data-dismiss=\"output\" aria-label=\"Close\"><span aria-hidden=\"true\">&times</span></button></a></li>";
   $("#output-list").append(tablist_element);
-  var output_panel="<div role=\"tabpanel\" class=\"tab-pane\" id=\""+name.split(" ").join("-")+"-output\">";
+  var output_panel="<div role=\"tabpanel\" class=\"tab-pane\" id=\""+name.split(" ").join("-")+output_count+"-output\">";
   output_panel+="		<ul class=\"nav nav-tabs\" role=\"tablist\">";
   output_panel+="			<li role=\"presentation\" class=\"active\"><a href=\"#"+name.split(" ").join("-")+"-stdout\" aria-controls=\""+name.split(" ").join("-")+"-stdout\" role=\"tab\" data-toggle=\"tab\">Stdout</a></li>";
   output_panel+="			<li role=\"presentation\"><a href=\"#"+name.split(" ").join("-")+"-stderr\" aria-controls=\""+name.split(" ").join("-")+"-stderr\" role=\"tab\" data-toggle=\"tab\">Stderr</a></li>";
@@ -108,6 +109,7 @@ socket.on("add-output", function(name){
   output_panel+="</div>";
   $("#outputs").prepend(output_panel);
   setRules();
+  output_count++;
 });
 socket.on("update-output", function(name, data, output){
   var output_line = "<p>"+data+"</p>";
