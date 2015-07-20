@@ -72,7 +72,7 @@ function extract_and_emit(ev, cat, file, data, target){
   var data_ar = unique(data.split("\n"));
   var urls="";
   data_ar.forEach(function(url){
-    urls+="<a href=\""+url+"\">"+url+"</a><br />";
+    urls+="<a target=\"_blank\" href=\""+url+"\">"+url+"</a><br />";
   });
   if(target!="all"){
     target.emit(ev, cat, file, urls);
@@ -174,10 +174,10 @@ io.sockets.on("connection", function(socket){
       }
       });*/
     if(name=="Log Replay" || name=="HiOA Tester Overlord"){
-      yml_test = spawn("bzt", [test, "-o", "execution.scenario.script="+testdir+"JMX/"+name+".jmx", "-o", "modules.console.disable=true", "-o", "execution.scenario.variables.username="+username, "-o", "execution.scenario.variables.password="+password, "-o", "execution.scenario.variables.random_pages="+random_pages, "-o", "execution.scenario.variables.logdir="+logdir+"/"+group+"/", "-o", "execution.concurrency="+conc, "-o", "execution.iterations="+iter, "-o", "execution.scenario.variables.pause="+pause, "-o", "execution.scenario.variables.server="+server]);
+      yml_test = spawn("bzt", [test, "-o", "execution.scenario.script="+testdir+"JMX/"+name+".jmx", "-o", "modules.console.disable=true", "-o", "execution.scenario.variables.username="+username, "-o", "execution.scenario.variables.password="+password, "-o", "execution.scenario.variables.random_pages="+random_pages, "-o", "execution.scenario.variables.logdir="+logdir+"/master/", "-o", "execution.concurrency="+conc, "-o", "execution.iterations="+iter, "-o", "execution.scenario.variables.pause="+pause, "-o", "execution.scenario.variables.server="+server]);
     }
     else{
-      yml_test = spawn("bzt", [test, "-o", "execution.scenario.script="+testdir+"JMX/Student Tester Overlord.jmx", "-o", "modules.console.disable=true", "-o", "execution.scenario.variables.username="+username, "-o", "execution.scenario.variables.password="+password, "-o", "execution.scenario.variables.random_pages="+random_pages, "-o", "execution.scenario.variables.logdir="+logdir+"/"+group+"/", "-o", "execution.concurrency="+conc, "-o", "execution.iterations="+iter, "-o", "execution.scenario.variables.pause="+pause, "-o", "execution.scenario.variables.server="+server]);
+      yml_test = spawn("bzt", [test, "-o", "execution.scenario.script="+testdir+"JMX/Student Tester Overlord.jmx", "-o", "modules.console.disable=true", "-o", "execution.scenario.variables.username="+username, "-o", "execution.scenario.variables.password="+password, "-o", "execution.scenario.variables.random_pages="+random_pages, "-o", "execution.scenario.variables.logdir="+logdir+"/master", "-o", "execution.concurrency="+conc, "-o", "execution.iterations="+iter, "-o", "execution.scenario.variables.pause="+pause, "-o", "execution.scenario.variables.server="+server]);
     }
     socket.emit("add-output", name);
     yml_test.stdout.on("data", function(data){
