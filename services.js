@@ -1,9 +1,10 @@
 var socket = io();
 var output_count = 0;
 // Get data from server
-socket.emit("init", "Please");
+socket.emit("init", "Please"); //Ask server for init, remember to be polite
 // Add a new error
-socket.on('err-add', function(cat, msg, urls){
+socket.on('err-add', function(cat, msg, urls){ //Server is sending us a new error
+  //Construct the html element with the new error
   var error_element = "<li>";
   error_element+="	<div class=\"error panel panel-danger\">";
   error_element+="		<div class=\"panel-heading\">";
@@ -16,10 +17,10 @@ socket.on('err-add', function(cat, msg, urls){
   error_element+=urls;
   error_element+="	</div>";
   error_element+="</li>";
-  $("#"+cat).find(".errors").append(error_element);
-  $("#"+cat).find(".label").attr('class', "label label-danger");
+  $("#"+cat).find(".errors").append(error_element); //Append error to the correct category
+  $("#"+cat).find(".label").attr('class', "label label-danger"); //Show that the category has an error
   $("#"+cat).find(".label").text("Error");
-  setRules();
+  setRules(); //Update the jQuery rules
 });
 // Update an error
 socket.on('err-update', function(cat, msg, urls){
@@ -32,7 +33,7 @@ socket.on('err-rm', function(cat, msg){
   $("ul").not(':has(li)').parents(".panel-body").siblings(".panel-heading").children(".panel-title").children(".label").text("OK");
   $("#"+cat).not(":has(.label-danger)").attr("class", "panel panel-success");
 });
-socket.on("cat-add", function(cat){
+socket.on("cat-add", function(cat){ //Add a category to the service list
   var cat_element="<div id=\""+cat+"\" class=\"panel panel-success\">";  
   cat_element+="<div class=\"panel-heading\">";  
   cat_element+="<h5 class=\"panel-title\">";  
@@ -89,9 +90,9 @@ socket.on("new-test", function(path, name, default_val){
   test_element+="		</div>";
   test_element+="</li>";
   $("#tests").prepend(test_element);
-  setRules();
+  setRules(); //Update jQuery rules
 });
-socket.on("add-output", function(name){
+socket.on("add-output", function(name){ //Add output tab
   var tablist_element="<li role=\"representation\"><a href=\"#"+name.split(" ").join("-")+output_count+"-output\" aria-controls=\""+name.split(" ").join("-")+"-output\" role=\"tab\" data-toggle=\"tab\">"+name;
   tablist_element+="<button type=\"button\" class=\"close\" data-dismiss=\"output\" aria-label=\"Close\"><span aria-hidden=\"true\">&times</span></button></a></li>";
   $("#output-list").append(tablist_element);
@@ -108,14 +109,14 @@ socket.on("add-output", function(name){
   output_panel+="		</div>";
   output_panel+="</div>";
   $("#outputs").prepend(output_panel);
-  setRules();
+  setRules(); //Update jQuery rules
   output_count++;
 });
-socket.on("update-output", function(name, data, output){
+socket.on("update-output", function(name, data, output){ //Update test output
   var output_line = "<p>"+data+"</p>";
   $("#"+name.split(" ").join("-")+"-"+output).append(output_line);
 });
-socket.on("welcome", function(user, group){
+socket.on("welcome", function(user, group){ //Construct welcome message from the server
   var welcome_element ="<h5>Welcome, <strong>"+user+"</strong></h5><h5><strong>"+group+"</strong></h5><button id=\"silly\" onclick=\"$(\'body\').css(\'background\',\'url(https://bitadmin.hioa.no/image/get/"+user+")\')\">Silly mode</button><h5><a href=\"/logout\">Log out</a></h5>";
   $("#welcome").append(welcome_element);
 });
@@ -127,7 +128,7 @@ function setRules(){
   $(".panel-heading").click(function(){
     $(this).siblings(".panel-body").slideToggle("fast");
   });
-  $(".btn").click(function(e){
+  $(".btn").click(function(e){ //Prevent "Run Test"-buttons from toggling panel
     e.stopPropagation();
   });
   $(".nav-tabs a").click(function(e){
