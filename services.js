@@ -11,6 +11,7 @@ socket.on('err-add', function(cat, msg, urls){ //Server is sending us a new erro
   error_element+="			<h5 class=\"panel-title\">";
   error_element+=msg;
   error_element+="		<span class=\"label label-danger\">Error</span>";
+  error_element+="<button type=\"button\" class=\"btn btn-xs btn-default polyopen\" onclick=\"open_links('"+msg.split(" ").join("-")+"-urls')\">Open all</button>";
   error_element+="		</h5>";
   error_element+="	</div>";
   error_element+="	<div id=\""+msg.split(" ").join("-").split(".").join("-")+"-urls\" class=\"urls panel-body\">";
@@ -143,6 +144,15 @@ function setRules(){
   $('[data-toggle="tooltip"]').tooltip();
   $(".panel-title:has(span.label-danger)").parents(".panel").attr("class","panel panel-danger");
   $(".panel-title").not(":has(span.label-danger)").not(":has(button)").parents(".panel").attr("class", "panel panel-success");
+}
+function open_links(error_urls){
+  var num_urls = $("#"+error_urls+" a[href!='']").length;
+  var c = confirm("Are you sure you want to open "+num_urls+ " tabs?");
+  if(c==true){
+    $("#"+error_urls).children("a[href!='']").each(function(){
+      window.open($(this).attr("href"));
+    });
+  }
 }
 // Request a test run from server
 function run_test(name, path){

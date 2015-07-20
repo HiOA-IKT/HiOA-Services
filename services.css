@@ -79,6 +79,12 @@ button#silly{
   float:left;
   opacity: 0;
 }
+button.polyopen{
+  opacity:0;
+}
+button.polyopen:hover{
+  opacity:100;
+}
 button#silly:hover{
   display: show;
   opacity: 100;
