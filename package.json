@@ -3,7 +3,8 @@
   "description": "Web frontend for HiOA Test Framework",
   "author": "Karl August Høivik <gussefant@gmail.com>",
   "scripts": {
-    "start": "node 'HiOA Services.js'"
+    "start": "node 'HiOA Services.js'",
+    "make_logs": "bash ../hioa-test-framework/make_logs.sh"
   },
   "repository": {
     "type": "git",
