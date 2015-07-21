@@ -118,7 +118,7 @@ passport.deserializeUser(function(user, done) {
 });
 io.sockets.on("connection", function(socket){
   var uid = socket.request.user.uid; //Easier to write later on
-  var group = socket.request.user.department; //Same as above
+  var group = socket.request.user.department.replace("ø","oe").replace("æ","ae").replace("å","aa"); //Same as above
   socket.on("init", function(magicword){ //If client asks for an init...
     if(magicword=="Please"){ //...check if client is polite
       console.log(uid+": Initializing group \""+group+"\"");
